@@ -1,0 +1,11 @@
+{
+  "login_fail": "Đăng nhập thất bại",
+  "title_is_required": "Loại mục lưu trữ không được bỏ trống",
+  "storages_not_found": "Danh sách lưu trữ trống",
+  "storage_not_found": "Mục lưu trữ không tồn tại",
+  "users_not_found": "Danh sách tài khoản trống",
+  "name_is_required": "Họ tên không được bỏ trống",
+  "username_is_required": "Mã định danh không được bỏ trống",
+  "username_is_duplicated": "Mã định danh đã tồn tại",
+  "user_not_found": "Tài khoản không tồn tại"
+}
