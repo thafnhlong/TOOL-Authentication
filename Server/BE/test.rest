@@ -1,0 +1,114 @@
+@baseUrl=http://localhost:3000
+
+#admin :1635249012235
+POST {{baseUrl}}/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username":"1635249012235",
+    "otp":"221559"
+}
+
+####
+
+@old_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM3MDg0MDcwLWRiNzItNDgwZS04MDdiLWI1ZTcxMjc2OTc0YyIsInNlY3JldCI6IjR5b3M0ayIsImlzYWRtaW4iOnRydWUsImlhdCI6MTYzNTI3MTEzMCwiZXhwIjoxNjM1MjcxNzMwfQ.pGgUedRBp7TGrkBuajV0uNWrxFqvz7blHhZpMULDMJc
+@admin_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM3MDg0MDcwLWRiNzItNDgwZS04MDdiLWI1ZTcxMjc2OTc0YyIsInNlY3JldCI6IjR5b3M0ayIsImlzYWRtaW4iOnRydWUsImlhdCI6MTYzNTI3MTg4MSwiZXhwIjoxNjM2MTM1ODgxfQ.Otlt5fdY7NsKoC6kKpBauITHqWO3hA4kpmVWRVZrCgU
+@user_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQwMGI3NjY1LThmYjQtNGE1OS1hNmI1LTg2ODllZGU2OGUzZCIsInNlY3JldCI6Imw0OGRxIiwiaWF0IjoxNjM1MjcxODQwLCJleHAiOjE2MzYxMzU4NDB9.976HJL_XvwbyT0xRD6EADruRK0v_uKgY0dshRaiw-AA
+
+# tạo tài khoản mới
+
+POST {{baseUrl}}/users HTTP/1.1
+Content-Type: application/json
+Authorization: bearer {{admin_token}}
+
+{
+  "name": "temp1",
+  "username": "temp1"
+}
+
+#### lấy ds tk
+GET {{baseUrl}}/users HTTP/1.1
+Authorization: bearer {{admin_token}}
+
+#### xóa tài khoản
+@remove_id = 400b7665-8fb4-4a59-a6b5-8689ede68e3d
+DELETE {{baseUrl}}/users/{{remove_id}} HTTP/1.1
+Authorization: bearer {{admin_token}}
+
+
+#### reset tài khoản
+@reset_id = fd067459-2e26-4e2e-816d-cc4819afd071
+PATCH  {{baseUrl}}/users/{{reset_id}} HTTP/1.1
+Authorization: bearer {{admin_token}}
+Content-Type: application/json
+
+{
+    "secret":true
+}
+
+#### qr tài khoản
+@qr_uid = f156d615-b416-42e4-b110-27e0f7e9a5c7
+GET {{baseUrl}}/users/{{qr_uid}}/qr HTTP/1.1
+Authorization: bearer {{admin_token}}
+
+#### get tfa
+GET {{baseUrl}}/config/tfa HTTP/1.1
+Authorization: bearer {{admin_token}}
+
+#### set tfa
+PUT {{baseUrl}}/config/tfa HTTP/1.1
+Authorization: bearer {{admin_token}}
+Content-Type: application/json
+
+{
+    "salt":"salt"
+}
+
+
+#### tạo mục lưu trữ mới
+
+POST {{baseUrl}}/storages HTTP/1.1
+Authorization: bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "title": "Mục lưu trữ 12",
+  "description": "Chú thích cho mục lưu trữ 1",
+  "encoded": "xxx..."
+}
+
+#### ds mục lưu trữ
+
+GET {{baseUrl}}/storages/compact HTTP/1.1
+Authorization: bearer {{user_token}}
+
+
+#### lay 1 mục lưu trữ
+@get_id = 8c2c455e-f6e9-4efb-8d2c-0dbab85b594d
+GET {{baseUrl}}/storages/{{get_id}} HTTP/1.1
+Authorization: bearer {{user_token}}
+
+
+#### chinh sua 1 mục lưu trữ
+@update_id = 8c2c455e-f6e9-4efb-8d2c-0dbab85b594d
+PUT {{baseUrl}}/storages/{{update_id}} HTTP/1.1
+Authorization: bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "title": "Chỉnh sửa mục lưu trữ 1",
+  "description": "Chỉnh sửa chú thích cho mục lưu trữ 1",
+  "encoded": "xxx..."
+}
+
+
+#### xoa 1 mục lưu trữ
+@delete_id = e2dec25e-6bd4-4a83-86e4-1573c462a430
+DELETE {{baseUrl}}/storages/{{delete_id}} HTTP/1.1
+Authorization: bearer {{user_token}}
+
+
+#### qr 1 mục lưu trữ
+@qr_id = 8c2c455e-f6e9-4efb-8d2c-0dbab85b594d
+GET {{baseUrl}}/storages/{{qr_id}}/qr HTTP/1.1
+Authorization: bearer {{user_token}}
