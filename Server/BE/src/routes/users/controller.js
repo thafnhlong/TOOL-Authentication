@@ -16,10 +16,12 @@ module.exports = {
     const { otp, username } = req.body;
     if (otp && username) {
       const user = await userService.getByUsername(username);
-      const tfa = await tfaService.get();
-      if (verifyOTP(otp, tfa, user.secret)) {
-        const access_token = await signAccessToken(user, tfa);
-        return { access_token };
+      if (user) {
+        const tfa = await tfaService.get();
+        if (verifyOTP(otp, tfa, user.secret)) {
+          const access_token = await signAccessToken(user, tfa);
+          return { access_token };
+        }
       }
     }
     throw new baseError("login_fail", message.login_fail);
