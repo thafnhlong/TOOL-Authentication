@@ -1,6 +1,7 @@
 module.exports = function responseBase(code, message, status = 200) {
-  return [{
+  this.result = {
     code,
     message
-  }, status]
+  };
+  this.status = status
 }

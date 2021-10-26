@@ -10,7 +10,7 @@ else {
 function createServer() {
   const express = require('express');
   const helmet = require('helmet');
-  const routes = require('./src/routes');
+  const { inject } = require('./src/routes');
   const cors = require('cors');
 
   const app = express();
@@ -25,7 +25,7 @@ function createServer() {
   app.use(express.json());
 
   // Load up the routes
-  app.use(routes);
+  inject(app);
 
   // Start the API
   app.listen(port);

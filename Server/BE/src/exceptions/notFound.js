@@ -1,5 +1,8 @@
-const baseError = require("./baseError");
+const baseError = require("./baseError")
 
-module.exports = function notFound(code, message) {
-  return baseError(code, message, 404);
+function notFound(code, message) {
+  baseError.call(this, code, message, 404);
 }
+notFound.prototype = Object.create(baseError.prototype);
+
+module.exports = notFound;

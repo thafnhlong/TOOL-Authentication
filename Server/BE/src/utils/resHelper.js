@@ -1,3 +1,9 @@
+const responseBase = require("../models/responseBase");
+
 module.exports = function resHelper(res, result) {
-  res.send(result[0]).status(result[1]);
+  if (result instanceof responseBase) {
+    res.status(result.status).json(result.result);
+  } else {
+    res.json(result);
+  }
 }

@@ -1,10 +1,22 @@
 const router = require('express').Router();
-const { handler } = require('./middlewares/wrapper');
 const index = require('./routes/index');
-const error = require('./routes/error');
+const users = require('./routes/users');
+const storages = require('./routes/storages');
+const { handler } = require('./middlewares/wrapper');
 
 router.use('/', index);
-router.use('/error', error);
+router.use('/users', users);
+router.use('/storages', storages);
 
-handler(router);
-module.exports = router;
+// For test wrapper
+// const error = require('./routes/error');
+// router.use('/error', error);
+
+function inject(app) {
+  app.use(router);
+  handler(app);
+}
+
+module.exports = {
+  inject
+};
