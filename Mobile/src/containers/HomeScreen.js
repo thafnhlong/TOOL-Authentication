@@ -1,5 +1,6 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import React from 'react';
-import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, Linking, ScrollView, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
 import totp from 'totp-generator';
 import UserContext from '../contexts/UserContext';
 import { decrypt, DecryptPassword } from '../utils/Password';
@@ -75,8 +76,11 @@ export default function HomeScreen() {
   </View>);
 }
 
-function TextBlock({ children }) {
-  return <Text style={styles.TextBlock}>{children}</Text>;
+function TextBlock({ children, style, onPress, selectable }) {
+  let _styles = styles.TextBlock;
+  if (style)
+    _styles = { ..._styles, ...style };
+  return <Text selectable={selectable} style={_styles} onPress={onPress}>{children}</Text>;
 }
 
 function UserInfo() {
@@ -84,14 +88,19 @@ function UserInfo() {
 
   const [password, setPassword] = React.useState("------");
   const [timeRemain, setTimeRemain] = React.useState(0);
+  const [timeReset, setTimeReset] = React.useState(0);
 
   React.useEffect(() => {
-    setPassword(totp(user.data.secretkey));
+    function refreshOTP() {
+      setPassword(totp(user.data.secretkey));
+      setTimeReset(+new Date() + 30000);
+    }
     const it = setInterval(() => {
       const newtime = 30 - new Date().getSeconds() % 30;
-      if (newtime == 30)
+      if (newtime == 30 || new Date() > timeReset)
         if (user.data && user.data.secretkey)
-          setPassword(totp(user.data.secretkey));
+          refreshOTP();
+
       setTimeRemain(newtime);
     }, 1000)
     return () => {
@@ -100,13 +109,43 @@ function UserInfo() {
   }, [])
 
   return [
-    <TextBlock key={1}>Login: {user.data.url}</TextBlock>,
-    <TextBlock key={2}>OTP: {password} ({timeRemain} seconds)</TextBlock>
+    <TextBlock style={{
+      color: "blue",
+      fontSize: 18,
+      fontWeight: "300",
+      textAlign: "center",
+    }} key={1} onPress={() => {
+      Linking.openURL(user.data.url);
+    }}
+    >{user.data.url}</TextBlock>,
+
+    <TextBlock style={{
+      fontSize: 25,
+      fontWeight: "500",
+      textAlign: "center",
+      paddingBottom: 0
+    }} key={2} onPress={() => {
+      Clipboard.setString(password);
+      ToastAndroid.show("OTP đã được sao chép vào bộ nhớ", ToastAndroid.SHORT);
+    }}
+    >OTP: {password}</TextBlock>,
+
+    <TextBlock style={{
+      textAlign: "center",
+      color: "green",
+      paddingTop: 0
+    }} key={3}> ({timeRemain} seconds)</TextBlock>
   ]
 }
 
 function ScanArea({ state, dispatch }) {
   const { details, password } = state;
+
+  let hint;
+  if (details && details["decoded"])
+    hint = "click vào để copy";
+  else
+    hint = "code giải mã không chính xác";
 
   return (
     <View style={styles.scanContainer}>
@@ -117,15 +156,30 @@ function ScanArea({ state, dispatch }) {
           secureTextEntry={true}
           value={password}
           onChangeText={e => dispatch({ type: "setPassword", payload: e })}
-          placeholder="Nhập mật khẩu mã hóa"
+          placeholder="Nhập mật khẩu giải mã AES Cipher"
         />
       </View>
       <ScrollView style={{ flex: 1 }}>
         {
           details != null && <>
-            <TextBlock>Loại: {details["title"]}</TextBlock>
-            <TextBlock>Mô tả: {details["description"]}</TextBlock>
-            <TextBlock>Giải mã: {details["decoded"]}</TextBlock>
+            <TextBlock
+              style={{ fontWeight: "500", color: "cornflowerblue" }}
+              selectable={true}
+            >Loại: {details["title"]}</TextBlock>
+            <TextBlock
+              style={{ color: "darksalmon" }}
+              selectable={true}
+            >Mô tả: {details["description"]}</TextBlock>
+            <TextBlock selectable={true}
+              style={{ color: "violet" }}
+            >Giải mã: ({hint})</TextBlock>
+            <TextBlock selectable={true}
+              style={{ color: "dimgray", fontWeight: "500" }}
+              onPress={() => {
+                Clipboard.setString(details["decoded"]);
+                ToastAndroid.show("Nội dung đã được sao chép vào bộ nhớ", ToastAndroid.SHORT);
+              }}
+            >{details["decoded"]}</TextBlock>
           </>
         }
       </ScrollView>
@@ -152,12 +206,16 @@ const styles = StyleSheet.create({
   },
   scanTitle: {
     textAlign: "center",
-    fontSize: 15
+    fontSize: 25,
+    fontWeight: "800"
   },
   scanPassword: {
     borderRadius: 10,
     borderWidth: 1,
-    marginTop: 20
+    marginTop: 20,
+    padding: 10,
+    textAlign: "center",
+    fontSize: 20
   },
   title: {
     fontSize: 25,
@@ -172,6 +230,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1
   },
   TextBlock: {
-    padding: 8
+    padding: 8,
+    fontSize: 16,
   }
 })
