@@ -24,7 +24,7 @@ const authenMiddleware = wrapper(async (req, _res, next) => {
     throw401();
   }
   const originUser = await userService.getById(payload.id);
-  if (payload.id === originUser.id && payload.secret === originUser.secret
+  if (originUser && payload.id === originUser.id && payload.secret === originUser.secret
     && payload.isadmin === originUser.isadmin) {
     const tfa = await tfaService.get();
     const verifyUser = await verifyAccessToken(accessToken, originUser.secret, tfa);
