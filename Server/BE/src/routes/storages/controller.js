@@ -4,7 +4,7 @@ const genQR = require("../../utils/qr");
 const storagesService = require("../../services/storage");
 const message = require("../../resouces/message.json");
 const responseBase = require("../../models/responseBase");
-const notFound = require("../../exceptions/notfound");
+const notFound = require("../../exceptions/notFound");
 
 module.exports = {
   add: wrapper(async (req) => {

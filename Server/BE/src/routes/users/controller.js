@@ -9,7 +9,7 @@ const tfaService = require('../../services/tfa');
 const message = require("../../resouces/message.json");
 const responseBase = require("../../models/responseBase");
 const baseError = require("../../exceptions/baseError");
-const notFound = require("../../exceptions/notfound");
+const notFound = require("../../exceptions/notFound");
 
 module.exports = {
   login: wrapper(async (req) => {

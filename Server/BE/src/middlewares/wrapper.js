@@ -2,8 +2,8 @@ const logger = require('../utils/logger');
 const resHelper = require("../utils/resHelper");
 const responseBase = require('../models/responseBase');
 const baseError = require('../exceptions/baseError');
-const generalerror = require('../exceptions/generalerror');
-const notfound = require('../exceptions/notfound');
+const generalError = require('../exceptions/generalError');
+const notFound = require('../exceptions/notFound');
 
 module.exports = {
   wrapper: function (processFunction) {
@@ -28,7 +28,7 @@ module.exports = {
 
   handler: function (router) {
     router.use(function (_req, _res, _next) {
-      throw new notfound("not_found", "Không tìm thấy api xử lý");
+      throw new notFound("not_found", "Không tìm thấy api xử lý");
     });
     router.use(function (error, req, res, _next) {
       let result = error;
@@ -37,7 +37,7 @@ module.exports = {
         logger(req.originalUrl)
         logger(result);
         if (process.env.NODE_ENV) {
-          result = new generalerror()
+          result = new generalError()
         }
         else {
           result = new baseError("internal_server_error", result.toString(), 500);
