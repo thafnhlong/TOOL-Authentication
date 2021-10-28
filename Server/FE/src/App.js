@@ -1,61 +1,81 @@
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Account from './pages/Account';
 import styled from 'styled-components';
+import { useEffect } from 'react';
 
 function App() {
+  const expiration = localStorage.getItem('token_expiration');
+  useEffect(() => {
+
+    if (expiration) {
+      if (Date.now >= parseInt(expiration) * 1000)
+      localStorage.removeItem('token_expiration');
+      localStorage.removeItem('access_token');
+    }
+  })
+
+
   return (
-    <Router>
-      <WholePage>
+    <WholePage>
+      <Router>
+
         {/* <div> Authentication</div> */}
-          <Switch>
-            <Route exact path="/" component={Home} />
+        <Switch>
+          <Route exact path="/" component={Home} />
 
-            <Route exact path="/login" component={Login} />
+          <Route exact path="/login" component={Login} />
 
-            <Route exact path="/:username" component={Account} />
+          <Route exact path="/:username" component={Account} />
 
-          </Switch>
+        </Switch>
 
-          <DonateWrapper>
-            <span><a href={{}} />Home</span>
-            <span style={{ pointerEvents: 'none', cursor: 'none' }}>&#8196;&#x2223;&#8196;</span>
-            <span><a href={{}} />Github</span>
-            <span style={{ pointerEvents: 'none', cursor: 'none' }}>&#8196;&#x2223;&#8196;</span>
-            <span><a href={{}} />Donation</span>
-          </DonateWrapper>
-      </WholePage>
-    </Router>
+        <DonateWrapper>
+          <span onClick={() => window.location.href = '/'}>Home</span>
+          <span style={{ pointerEvents: 'none', cursor: 'none' }}>&#8196;&#x2223;&#8196;</span>
+
+          <span onClick={() => window.location.href = 'https://github.com/thafnhlong/TOOL-Authentication'}>Github</span>
+          <span style={{ pointerEvents: 'none', cursor: 'none' }}>&#8196;&#x2223;&#8196;</span>
+
+          <span onClick={() => window.location.href = '/'}>Donation</span>
+        </DonateWrapper>
+      </Router>
+    </WholePage>
   );
 }
 
 export default App;
 
-const WholePage = styled.div`
+const WholePage = styled.body`
   display: flex;
+  flex-direction: column;
 
-  height: "calc(100% - 20px)";
-  width: "calc(100% - 20px)";
+  justify-content: space-between;
 
-  margin: 10;
-  border-radius: 5;
-  background-color: "whiteSmoke";
+  height: calc(100vh - 20px);
+  width: calc(100vw - 20px);
 
+  margin: 10px 10px;
+
+  border-radius: 15px;
+
+  background-color: whiteSmoke;
+
+  overflow: hidden;
 `;
 
 const DonateWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+  height: 67px;
 
   justify-content: center;
   align-items: center;
 
-  position: absolute;
-  bottom: 5px;
+
   font-size: 48px;
   font-weight: bold;
   color: #34ACE0;

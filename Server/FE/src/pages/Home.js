@@ -15,12 +15,15 @@ const Home = () => {
 
         <ContentWrapper>
           <PhoneIconWrapper>
-            <Phone/>
+            <Phone />
           </PhoneIconWrapper>
+
           <QuoteWrapper>
             <Quote></Quote>
           </QuoteWrapper>
+
         </ContentWrapper>
+
       </Section>
     </>
   }
@@ -36,10 +39,9 @@ const Section = styled.div`
   flex-direction: column;
 
   align-items: center;
-  justify-content: space-around;
 
   width: 100%;
-  height: 100%;
+  height: auto;
 `;
 
 const TitleWrapper = styled.div`
@@ -59,9 +61,12 @@ const TitleWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   display: flex;
+  align-content: center;
+
   flex-direction: row;
 
   width: 100%;
+  height: auto;
 
   margin-top: 64px;
 

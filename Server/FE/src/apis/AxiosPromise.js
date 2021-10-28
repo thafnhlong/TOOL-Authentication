@@ -3,7 +3,7 @@ import {url} from '../utils/urls';
 
 
 function createInstance() {
-    const token = localStorage.getItem('cpanelToken');
+    const token = localStorage.getItem('access_token');
     return axios.create({
         baseURL: url,
         headers: {common: {"Authorization": `Bearer ${token}`}}
@@ -24,6 +24,8 @@ function createInstance() {
  *          origin: data receiver
  */
 export async function fetchApi(method, url, arg) {
+
+
     const instance = createInstance();
 
     let result = null
@@ -48,7 +50,9 @@ export async function fetchApi(method, url, arg) {
     }
 
     return result
-        .then(resp => resp.data)
+        .then(resp => {
+          return resp.data
+        })
         .catch(err => {
             if (!err.response)
                 throw null;
